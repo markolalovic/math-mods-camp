@@ -8,18 +8,39 @@ import matplotlib.patches as patches
 
 class Plant:
     ''' Constructs a toy plant given the specifications and heliostats layout. '''
-    def __init__(self, plant_file_name="", heli_layout_file_name="", heli_layout=[]):
+    def __init__(self, heli_layout_file_name="", heli_layout=[]):
         ''' Inputs:
+        plant_file_name="", -> removed for now
             * Plant and layout descriptions in JSON format, for example:
                 * plant_file_name="../data/plants/tiny-plant.json"
                 * heli_layout_file_name="../data/layouts/tiny-layout.json"
             * For debugging also a list of coordinates, for example:
                 heli_layout = [[8, 4], ..., [28, 4]]
         '''
-        if plant_file_name:
-            plant_d = self.load(plant_file_name) # loads the description in a dict
-        else:
-            raise ValueError("missing plant description")
+        # if plant_file_name:
+        #     plant_d = self.load(plant_file_name) # loads the description in a dict
+        # else:
+        #     raise ValueError("missing plant description")
+        # fixed the plant to hypothetical plant to simplify loading and evaluation
+        plant_d = {
+            "name": "Hypothetical Plant",
+            "field_area": {
+                "x_min": 0,
+                "x_max": 100,
+                "y_min": 0,
+                "y_max": 20,
+                "d_min": 3
+            },
+            "receiver": {
+                "rec_height": 50,
+                "rec_angle": 80,
+                "rec_size": 5
+            },
+            "heliostats": {
+                "heli_size": 3,
+                "heli_rays": 5
+            }
+        }
 
         self.dim = 2 # dimensions fixed 2 for a start
         self.name = plant_d["name"]
@@ -89,7 +110,8 @@ class Plant:
         ''' Checks that:
             * heliostats are in the field area
             * heliostats are minimum distance appart and minimum
-        distance from the receiver.
+        distance from the receiver. It also sets max_ij = maximum distance
+        between heliostats for drawings.
         '''
         if np.any(self.heli_layout[:, 0] > self.x_max):
             return False
@@ -152,7 +174,7 @@ class Plant:
 
         ax.plot([0, 0],
           [self.y_min - y_margins[0],
-           self.y_max + y_margins[1]], color="black")
+           np.max([self.y_max, self.rec_height]) + y_margins[1]], color="black")
 
         ## field area
         rect = patches.Rectangle((self.x_min, self.y_min),
@@ -170,11 +192,11 @@ class Plant:
         ## heliostats
         ax.plot(self.heli_layout[:, 0], self.heli_layout[:, 1], "o", color="red")
         for heli_c in list(self.heli_layout):
-            heli_circle = plt.Circle(heli_c, self.d_min,
+            heli_circle = plt.Circle(heli_c, self.heli_size / 2,
                 edgecolor='black', fill=False, linestyle='--')
             ax.add_patch(heli_circle)
 
-        plt.title(self.name)
+        plt.title("{:s} with {:s}".format(self.name, self.heli_layout_name))
         plt.show()
 
 ## tiny plant json creation:

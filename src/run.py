@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """ run.py - Runs the toy model for optical part of a solar power tower plant. """
 
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -86,10 +87,12 @@ def get_power(plant, state, do_stats=True):
     return power, etas_means, sbms_props
 
 if __name__ == "__main__":
-    ## initialize some plant with some layout
-    plant = Plant(plant_file_name="../data/plants/tiny-plant.json",
-                  heli_layout_file_name="../data/layouts/tiny-layout.json")
+    if len(sys.argv) < 2:
+        raise ValueError("missing layout file name")
+
+    ## initialize hypothetical plant with provided layout
+    plant = Plant(heli_layout_file_name=sys.argv[1])
 
     ## evaluate it
-    energy = get_energy(plant, show_stats=True)
+    energy, _, _ = get_energy(plant, show_stats=False)
     print(energy)
