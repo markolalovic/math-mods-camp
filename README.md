@@ -24,6 +24,7 @@ Below are the current results for a few basic layouts evaluated on the Hypotheti
 
 |         Layout         |    Energy  |
 |-------------------------|---------------|
+| theater-layout | 243.62 |
 | parabolic-layout | 233.01 |
 | grid-layout-2 | 194.62 |
 | grid-layout | 178.95 |
