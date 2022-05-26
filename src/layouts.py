@@ -24,6 +24,11 @@ def valid_layout(heli_layout):
                 return False
     return True
 
+## theater layout
+xs = np.linspace(0, 100, 20)
+ys = list(map(lambda x: x/5, xs))
+save_layout(xs, ys, "theater-layout")
+
 ## put heliostats on parabola trough boundary points = parabolic layout
 xs = np.linspace(0, 100, 20)
 ys = list(map(lambda x: 1/125*(x - 50)**2, xs))
@@ -44,6 +49,7 @@ save_layout(pr[:, 0], pr[:, 1], "grid-layout")
 pr = np.array([[x, 0] for x in np.linspace(5,  90, 10)]+\
               [[x, 20] for x in np.linspace(10,  100, 10)])
 save_layout(pr[:, 0], pr[:, 1], "grid-layout-2")
+
 
 ## uniform random layout
 while True:
