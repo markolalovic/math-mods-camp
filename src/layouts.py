@@ -29,12 +29,17 @@ xs = np.linspace(0, 100, 20)
 ys = list(map(lambda x: x/5, xs))
 save_layout(xs, ys, "theater-layout")
 
-## put heliostats on parabola trough boundary points = parabolic layout
+## flip the previous layout upside-down
+xs = np.linspace(10, 100, 20)
+ys = list(map(lambda x: -x/5 + 20, xs))
+save_layout(xs, ys, "theater-layout-flipped")
+
+## on parabola through the boundary points
 xs = np.linspace(0, 100, 20)
 ys = list(map(lambda x: 1/125*(x - 50)**2, xs))
 save_layout(xs, ys, "parabolic-layout")
 
-## lets try flipping the previous parabola
+## flip the previous layout upside-down
 xs = np.linspace(0, 100, 20)
 ys = list(map(lambda x: -1/125*(x - 50)**2 + 20, xs))
 save_layout(xs, ys, "parabolic-layout-flipped")
@@ -45,7 +50,7 @@ ys = np.linspace(0, 20, 4)
 pr = np.array([(x, y) for x in xs for y in ys])
 save_layout(pr[:, 0], pr[:, 1], "grid-layout")
 
-## second grid layout
+## grid layout - improved
 pr = np.array([[x, 0] for x in np.linspace(5,  90, 10)]+\
               [[x, 20] for x in np.linspace(10,  100, 10)])
 save_layout(pr[:, 0], pr[:, 1], "grid-layout-2")
