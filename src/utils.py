@@ -30,10 +30,10 @@ def load(file_name):
 def get_energy(plant, do_stats=False):
     ''' Returns the energy for a given plant initialized with a layout. '''
     sun = Sun()
-    powers = np.zeros(sun.m, dtype="float128")
+    powers = np.zeros(sun.m)
     if do_stats:
-        etas_means_m = np.zeros((sun.m, 3), dtype="float128")
-        sbms_props_m = np.zeros((sun.m, 3), dtype="float128")
+        etas_means_m = np.zeros((sun.m, 3))
+        sbms_props_m = np.zeros((sun.m, 3))
 
     for t in sun.ts:
         sun_angle = sun.angles[t]
@@ -87,8 +87,8 @@ def get_power(plant, state, do_stats=True):
     '''
     power = 0.0
     if do_stats:
-        etas = np.zeros((plant.n, 3), dtype="float128")
-        sbms = np.zeros((plant.n, 3), dtype="float128")
+        etas = np.zeros((plant.n, 3))
+        sbms = np.zeros((plant.n, 3))
 
     for i in range(plant.n):
         eta_aa, eta_cos, eta_sbm, not_sbm = state.get_effects(i, verbose=False)

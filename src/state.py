@@ -12,6 +12,7 @@ class State:
         Inputs:
             * object plant of class Plant: description of a plant
             * sun_angle: angle between 0 and \pi in radians
+            TODO: optimize 
         '''
         self.plant = plant
         self.sun_angle = sun_angle
@@ -34,9 +35,9 @@ class State:
         self.heli_bs = self.plant.layout - self.plant.heli_size / 2 * self.heli_tans
 
         ## ray points
-        self.surf_points = np.zeros((self.plant.n, self.plant.heli_rays, self.plant.dim), dtype="float128")
-        self.ref_ends = np.zeros((self.plant.n, self.plant.heli_rays, self.plant.dim), dtype="float128")
-        self.sun_ends = np.zeros((self.plant.n, self.plant.heli_rays, self.plant.dim), dtype="float128")
+        self.surf_points = np.zeros((self.plant.n, self.plant.heli_rays, self.plant.dim))
+        self.ref_ends = np.zeros((self.plant.n, self.plant.heli_rays, self.plant.dim))
+        self.sun_ends = np.zeros((self.plant.n, self.plant.heli_rays, self.plant.dim))
         for i in range(self.plant.n):
             self.surf_points[i], self.ref_ends[i], self.sun_ends[i] = self.get_ray_points(i)
 
@@ -147,8 +148,8 @@ class State:
         surf_points = mat_heli_b + mat_coefs * mat_heli_tan * self.plant.heli_size
         surf_points = surf_points.T
 
-        ref_ends = np.zeros((self.plant.heli_rays, self.plant.dim), dtype="float128")
-        sun_ends = np.zeros((self.plant.heli_rays, self.plant.dim), dtype="float128")
+        ref_ends = np.zeros((self.plant.heli_rays, self.plant.dim))
+        sun_ends = np.zeros((self.plant.heli_rays, self.plant.dim))
         for j in range(self.plant.heli_rays):
             surf_point = surf_points[j, :].T
 
