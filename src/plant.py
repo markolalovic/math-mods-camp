@@ -7,42 +7,33 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 class Plant:
-    ''' Constructs a toy plant given the specifications and heliostats layout. '''
-    def __init__(self, heli_layout_file_name="", heli_layout=[]):
-        ''' Inputs:
-        plant_file_name="", -> removed for now
-            * Plant and layout descriptions in JSON format, for example:
-                * plant_file_name="../data/plants/tiny-plant.json"
-                * heli_layout_file_name="../data/layouts/tiny-layout.json"
-            * For debugging also a list of coordinates, for example:
-                heli_layout = [[8, 4], ..., [28, 4]]
-        '''
-        # if plant_file_name:
-        #     plant_d = self.load(plant_file_name) # loads the description in a dict
-        # else:
-        #     raise ValueError("missing plant description")
-        # fixed the plant to hypothetical plant to simplify loading and evaluation
-        plant_d = {
-            "name": "Hypothetical Plant",
-            "field_area": {
-                "x_min": 0,
-                "x_max": 100,
-                "y_min": 0,
-                "y_max": 20,
-                "d_min": 3
-            },
-            "receiver": {
-                "rec_height": 50,
-                "rec_angle": 80,
-                "rec_size": 5
-            },
-            "heliostats": {
-                "heli_size": 3,
-                "heli_rays": 5
-            }
-        }
-
-        self.dim = 2 # dimensions fixed 2 for a start
+    ''' Constructs a plant given the plants specifications and heliostats layout.
+    Args:
+        * plant_d as a dictionary, for example:
+            tiny_plant = {
+                        "name": "Tiny Plant",
+                        "field_area": {
+                            "x_min": 0,
+                            "x_max": 35,
+                            "y_min": 0,
+                            "y_max": 10,
+                            "d_min": 4
+                        },
+                        "receiver": {
+                            "rec_height": 12,
+                            "rec_angle": 80,
+                            "rec_size": 4
+                        },
+                        "heliostats": {
+                            "heli_size": 4,
+                            "heli_rays": 5
+                        }
+                    }
+        * heliostats layout as a list of coordinates, for example:
+            tiny_layout = [[8, 4], [16, 4], [22, 4], [28, 4]]}
+    '''
+    def __init__(self, plant_d, layout=[]):
+        self.dim = 2
         self.name = plant_d["name"]
 
         ## field area bounds and diameter
@@ -66,67 +57,46 @@ class Plant:
         self.rec_b = self.rec_c - self.rec_size / 2 * rec_tan_vec
 
         ## heliostats
-        if heli_layout:
-            self.heli_layout_name = ""
-            self.heli_layout = np.array(heli_layout) # centers of heliostats
-        elif heli_layout_file_name:
-            layout_dict = self.load(heli_layout_file_name)
-            self.heli_layout_name = list(layout_dict.keys())[0]
-            self.heli_layout = np.array(layout_dict[self.heli_layout_name])
-        else:
-            raise ValueError("missing layout")
+        self.layout = np.array(layout) # centers of heliostats
 
-        self.n = len(self.heli_layout) # number of heliostats
+        self.n = len(self.layout) # number of heliostats
         self.heli_size = plant_d["heliostats"]["heli_size"]
         self.heli_rays = plant_d["heliostats"]["heli_rays"] # number of rays per heliostat
 
-        ## heliostats reflected vectors
-        heli_refs = self.rec_c - self.heli_layout
-        heli_refs = heli_refs.astype("float128")
-        self.ref_lengths = np.apply_along_axis(np.linalg.norm, 1, heli_refs)
-        heli_refs = heli_refs / np.array([self.ref_lengths, self.ref_lengths]).T
-        self.heli_refs = self.heli_layout + heli_refs
+        ## set reflected vectors, max_ij, valid_layout
+        self.set_layout()
 
-        self.max_ij = 0
-        self.valid_layout = self.check_layout()
-
-    def save(self, d, file_name, indent=0):
-        ''' Helper method to save the layout, or plant specs.
-        Example:
-            d = {"tiny-layout": [[8, 4], [16, 4], [22, 4], [28, 4]]}
-            file_name = "../data/layouts/tiny-layout.json"
-            plant.save(d, file_name) # saves it to ../data
-        '''
-        with open(file_name, 'w') as file:
-            json.dump(d, file, indent=indent)
-
-    def load(self, file_name):
-        ''' Helper method to load the layout, or plant specs. '''
-        with open(file_name) as file:
-            d = json.load(file)
-        return d
-
-    def check_layout(self):
+    def set_layout(self):
         ''' Checks that:
             * heliostats are in the field area
             * heliostats are minimum distance appart and minimum
         distance from the receiver. It also sets max_ij = maximum distance
         between heliostats for drawings.
         '''
-        if np.any(self.heli_layout[:, 0] > self.x_max):
+        heli_refs = self.rec_c - self.layout
+        heli_refs = heli_refs.astype("float128")
+        self.ref_lengths = np.apply_along_axis(np.linalg.norm, 1, heli_refs)
+        heli_refs = heli_refs / np.array([self.ref_lengths, self.ref_lengths]).T
+        self.heli_refs = self.layout + heli_refs
+        self.max_ij = 0
+        self.valid_layout = self.check_layout()
+
+    def check_layout(self):
+        self.max_ij = 0
+        if np.any(self.layout[:, 0] > self.x_max):
             return False
-        if np.any(self.heli_layout[:, 0] < self.x_min):
+        if np.any(self.layout[:, 0] < self.x_min):
             return False
-        if np.any(self.heli_layout[:, 1] > self.y_max):
+        if np.any(self.layout[:, 1] > self.y_max):
             return False
-        if np.any(self.heli_layout[:, 1] < self.y_min):
+        if np.any(self.layout[:, 1] < self.y_min):
             return False
 
         for i in range(self.n):
-            if np.linalg.norm(self.heli_layout[i] - self.rec_c) < self.d_min:
+            if np.linalg.norm(self.layout[i] - self.rec_c) < self.d_min:
                 return False
             for j in range(i + 1, self.n):
-                dist_ij = np.linalg.norm(self.heli_layout[i] - self.heli_layout[j])
+                dist_ij = np.linalg.norm(self.layout[i] - self.layout[j])
                 if dist_ij > self.max_ij:
                     self.max_ij = dist_ij
                 if dist_ij < self.d_min:
@@ -154,12 +124,10 @@ class Plant:
         out += "\n\t\t- number of heliostats n = {:4.2f}".format(self.n)
         out += "\n\t\t- heli_size = {:4.2f}".format(self.heli_size)
         out += "\n\t\t- heli_rays = {:4.2f}".format(self.heli_rays)
-        if self.heli_layout_name:
-            out += "\n\t\t- heli_layout = {:s} \n".format(self.heli_layout_name)
-        else:
-            out += "\n\t\t- heli_layout = [[{:4.2f}, {:4.2f}], ..., [{:4.2f}, {:4.2f}]]\n"\
-                .format(self.heli_layout[0, 0], self.heli_layout[0, 1],\
-                        self.heli_layout[-1, 0], self.heli_layout[-1, 1])
+
+        out += "\n\t\t- layout = [[{:4.2f}, {:4.2f}], ..., [{:4.2f}, {:4.2f}]]\n"\
+            .format(self.layout[0, 0], self.layout[0, 1],\
+                    self.layout[-1, 0], self.layout[-1, 1])
         return out
 
     def draw(self):
@@ -190,37 +158,10 @@ class Plant:
         ax.add_patch(rec_circle)
 
         ## heliostats
-        ax.plot(self.heli_layout[:, 0], self.heli_layout[:, 1], "o", color="red")
-        for heli_c in list(self.heli_layout):
+        ax.plot(self.layout[:, 0], self.layout[:, 1], "o", color="red")
+        for heli_c in list(self.layout):
             heli_circle = plt.Circle(heli_c, self.heli_size / 2,
                 edgecolor='black', fill=False, linestyle='--')
             ax.add_patch(heli_circle)
 
-        plt.title("{:s} with {:s}".format(self.name, self.heli_layout_name))
         plt.show()
-
-## tiny plant json creation:
-# plant_d = {}
-# plant_d["name"] = "Tiny Plant"
-#
-# field_area_d = {}
-# field_area_d["x_min"] = 0
-# field_area_d["x_max"] = 35
-# field_area_d["y_min"] = 0
-# field_area_d["y_max"] = 10
-# field_area_d["d_min"] = 2
-# plant_d["field_area"] = field_area_d
-#
-# rec_d = {}
-# rec_d["rec_height"] = 12
-# rec_d["rec_angle"] = 80
-# rec_d["rec_size"] = 4
-# plant_d["receiver"] = rec_d
-#
-# heli_d = {}
-# heli_d["heli_size"] = 4
-# heli_d["heli_rays"] = 5
-# plant_d["heliostats"] = heli_d
-#
-# plant_file_name = "../data/plants/tiny-plant.json"
-# plant.save(plant_d, plant_file_name, 4)

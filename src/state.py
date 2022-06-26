@@ -19,19 +19,19 @@ class State:
 
         ## sun tangent vector
         sun_vec = np.array([np.cos(self.sun_angle), np.sin(self.sun_angle)])
-        self.heli_suns = self.plant.heli_layout + sun_vec
+        self.heli_suns = self.plant.layout + sun_vec
 
         ## heliostats normals
-        heli_normals = self.plant.heli_refs + self.heli_suns - 2 * self.plant.heli_layout
+        heli_normals = self.plant.heli_refs + self.heli_suns - 2 * self.plant.layout
         normal_lengths = np.apply_along_axis(np.linalg.norm, 1, heli_normals)
         heli_normals = heli_normals / np.array([normal_lengths, normal_lengths]).T
-        self.heli_normals = self.plant.heli_layout + heli_normals
+        self.heli_normals = self.plant.layout + heli_normals
 
         ## heliostats tangent vectors and edge points
-        heli_tans = self.heli_normals - self.plant.heli_layout
+        heli_tans = self.heli_normals - self.plant.layout
         self.heli_tans = np.array([-heli_tans[:, 1], heli_tans[:, 0]]).T
-        self.heli_as = self.plant.heli_layout + self.plant.heli_size / 2 * self.heli_tans
-        self.heli_bs = self.plant.heli_layout - self.plant.heli_size / 2 * self.heli_tans
+        self.heli_as = self.plant.layout + self.plant.heli_size / 2 * self.heli_tans
+        self.heli_bs = self.plant.layout - self.plant.heli_size / 2 * self.heli_tans
 
         ## ray points
         self.surf_points = np.zeros((self.plant.n, self.plant.heli_rays, self.plant.dim), dtype="float128")
@@ -71,8 +71,8 @@ class State:
         return eta_aa, eta_cos, eta_sbm, not_sbm
 
     def get_cosine_effect(self, i):
-        heli_normal = self.heli_normals[i] - self.plant.heli_layout[i]
-        heli_sun = self.heli_suns[i] - self.plant.heli_layout[i]
+        heli_normal = self.heli_normals[i] - self.plant.layout[i]
+        heli_sun = self.heli_suns[i] - self.plant.layout[i]
         return np.inner(heli_normal, heli_sun)
 
     def get_received_rays(self, i):
@@ -153,11 +153,11 @@ class State:
             surf_point = surf_points[j, :].T
 
             # ray ends towards the receiver
-            ref_vec = self.plant.heli_refs[i] - self.plant.heli_layout[i]
+            ref_vec = self.plant.heli_refs[i] - self.plant.layout[i]
             ref_ends[j] = surf_point + ref_vec * self.plant.ref_lengths[i] * self.d_factor
 
             # draw the rays towards the sun
-            sun_vec = self.heli_suns[i] - self.plant.heli_layout[i]
+            sun_vec = self.heli_suns[i] - self.plant.layout[i]
             sun_ends[j] = surf_point + sun_vec * self.plant.max_ij * self.d_factor
 
         return surf_points, ref_ends, sun_ends
@@ -208,7 +208,7 @@ class State:
                 color="blue", linewidth=2)
 
         ## heliostats
-        ax.plot(self.plant.heli_layout[:, 0], self.plant.heli_layout[:, 1],
+        ax.plot(self.plant.layout[:, 0], self.plant.layout[:, 1],
           "o", color="red")
 
         ## heliostats, sun vectors, reflected vectors, normals
@@ -216,16 +216,16 @@ class State:
                 [self.heli_as[:, 1], self.heli_bs[:, 1]],
                 color="blue", linewidth=2)
 
-        ax.plot([self.plant.heli_layout[:, 0], self.heli_suns[:, 0]],
-                [self.plant.heli_layout[:, 1], self.heli_suns[:, 1]],
+        ax.plot([self.plant.layout[:, 0], self.heli_suns[:, 0]],
+                [self.plant.layout[:, 1], self.heli_suns[:, 1]],
                 color="red")
 
-        ax.plot([self.plant.heli_layout[:, 0], self.plant.heli_refs[:, 0]],
-                [self.plant.heli_layout[:, 1], self.plant.heli_refs[:, 1]],
+        ax.plot([self.plant.layout[:, 0], self.plant.heli_refs[:, 0]],
+                [self.plant.layout[:, 1], self.plant.heli_refs[:, 1]],
                 color="red")
 
-        ax.plot([self.plant.heli_layout[:, 0], self.heli_normals[:, 0]],
-                [self.plant.heli_layout[:, 1], self.heli_normals[:, 1]],
+        ax.plot([self.plant.layout[:, 0], self.heli_normals[:, 0]],
+                [self.plant.layout[:, 1], self.heli_normals[:, 1]],
                 color="black")
 
         ## draw the surface points for heliostat i
