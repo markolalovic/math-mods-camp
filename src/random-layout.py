@@ -13,7 +13,7 @@ if __name__ == "__main__":
     n = 5
 
     ## random layout
-    nruns = 100
+    nruns = 10000
     max_energy = 0
     best_layout = []
     energies = []
