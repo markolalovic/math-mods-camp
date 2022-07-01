@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-""" run.py - Runs the toy model for optical part of a solar power tower plant. """
+""" run.py - how to evaluate a layout for Tiny plant. """
 
 import sys
 import numpy as np
@@ -12,11 +12,17 @@ from plant import Plant
 import utils
 
 if __name__ == "__main__":
-    ## initialize hypothetical plant with basic layout
-    hypo_plant = utils.load("../data/plants/hypo-plant.json")
-    basic_layout = utils.load("../data/layouts/theater-layout.json")['theater-layout']
-    plant = Plant(hypo_plant, basic_layout)
+    ## create a layout, for example:
+    layout = [[1, 1], [5, 2.5], [10, 5], [15, 8], [20, 10]]
 
-    ## evaluate it
-    energy = utils.get_energy(plant)
-    print(energy)
+    ## initialize Tiny plant with the layout
+    plant = Plant(layout)
+
+    ## check if it is valid layout
+    print("Valid: " + str(plant.valid_layout))
+
+    ## draw the layout
+    plant.draw()
+
+    ## evaluate the total energy output
+    print("Energy: " + str(utils.get_energy(plant, do_stats=False)))

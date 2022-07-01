@@ -4,28 +4,29 @@
 import json
 import numpy as np
 import pandas as pd
-from plant import Plant
+
 from sun import Sun
 from state import State
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 def save(d, file_name, indent=0):
-    ''' Helper method to save the layout, or plant specs.
-    Example:
-        d = {"tiny-layout": [[8, 4], [16, 4], [22, 4], [28, 4]]}
-        file_name = "../data/layouts/tiny-layout.json"
-        plant.save(d, file_name) # saves it to ../data
-    '''
+    ''' Saves the layout, or plant specs in dictionary format to JSON file. '''
     with open(file_name, 'w') as file:
         json.dump(d, file, indent=indent)
 
-
 def load(file_name):
-    ''' Helper method to load the layout, or plant specs. '''
+    ''' Loads the layout, or plant specs. '''
     with open(file_name) as file:
         d = json.load(file)
     return d
+
+def save_layout(xs, ys, layout_name, indent=4):
+    ''' Saves the layout from two numpy arrays of coordinates to JSON file. '''
+    d = np.column_stack((xs,ys)).tolist()
+    file_name = "../data/layouts/{:s}.json".format(layout_name)
+    with open(file_name, 'w') as file:
+        json.dump(d, file, indent=indent)
 
 def get_energy(plant, do_stats=False):
     ''' Returns the energy for a given plant initialized with a layout. '''

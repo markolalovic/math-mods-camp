@@ -5,35 +5,20 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import utils
 
 class Plant:
     ''' Constructs a plant given the plants specifications and heliostats layout.
     Args:
-        * plant_d as a dictionary, for example:
-            tiny_plant = {
-                        "name": "Tiny Plant",
-                        "field_area": {
-                            "x_min": 0,
-                            "x_max": 35,
-                            "y_min": 0,
-                            "y_max": 10,
-                            "d_min": 4
-                        },
-                        "receiver": {
-                            "rec_height": 12,
-                            "rec_angle": 80,
-                            "rec_size": 4
-                        },
-                        "heliostats": {
-                            "heli_size": 4,
-                            "heli_rays": 5
-                        }
-                    }
-        * heliostats layout as a list of coordinates, for example:
-            tiny_layout = [[8, 4], [16, 4], [22, 4], [28, 4]]}
+        * layout as a list of coordinates, for example: [[1, 2], [3, 4]]
+        * plant_d as a dictionary, see ../data/plants/tiny-plant.json
     '''
-    def __init__(self, plant_d, layout=[]):
+    def __init__(self, layout=[[0, 0]], plant_d=None):
         self.dim = 2
+
+        if plant_d is None:
+            plant_d = utils.load("../data/plants/tiny-plant.json")
+
         self.name = plant_d["name"]
 
         ## field area bounds and diameter
@@ -73,6 +58,7 @@ class Plant:
         distance from the receiver. It also sets max_ij = maximum distance
         between heliostats for drawings.
         '''
+        self.n = self.layout.shape[0]
         heli_refs = self.rec_c - self.layout
         heli_refs = heli_refs.astype("float128")
         self.ref_lengths = np.apply_along_axis(np.linalg.norm, 1, heli_refs)
@@ -80,16 +66,19 @@ class Plant:
         self.heli_refs = self.layout + heli_refs
         self.max_ij = 0
         self.valid_layout = self.check_layout()
+        if self.n == 1:
+            self.max_ij = self.y_max
 
     def check_layout(self):
+        eps = 1e-5
         self.max_ij = 0
-        if np.any(self.layout[:, 0] > self.x_max):
+        if np.any(self.layout[:, 0] > self.x_max + eps):
             return False
-        if np.any(self.layout[:, 0] < self.x_min):
+        if np.any(self.layout[:, 0] < self.x_min - eps):
             return False
-        if np.any(self.layout[:, 1] > self.y_max):
+        if np.any(self.layout[:, 1] > self.y_max + eps):
             return False
-        if np.any(self.layout[:, 1] < self.y_min):
+        if np.any(self.layout[:, 1] < self.y_min - eps):
             return False
 
         for i in range(self.n):
