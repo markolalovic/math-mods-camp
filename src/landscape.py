@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-""" random-layout.py - starting from some basic layout, try to optimize
-on position of only the middle heliostat to be able to draw some figures. """
+""" landscape.py - starting from some basic layout, try to optimize
+    on position of a single heliostat to be able to draw some figures. """
 
 from plant import Plant
 import numpy as np
@@ -49,7 +49,7 @@ def surface_plot(points):
     ax.scatter3D(xpts[argmax_i], ypts[argmax_i], zpts[argmax_i], s=200);
 
     fig.tight_layout()
-    fig.savefig('../figures/surface_plot.png', dpi=100)
+    fig.savefig('../figures/landscape/surface_plot.png', dpi=100)
     plt.show()
 
 def contour_plot(XYZ):
@@ -121,7 +121,7 @@ def gradient_plot(plant, xs, XYZ, name):
         ax.text(xs[i][0] - .03, xs[i][1] + 0.03, str(i), fontsize=12)
 
     # plt.show()
-    fig.savefig('../figures/gradient_ascent_'+ name +'.png', dpi=100)
+    fig.savefig('../figures/landscape/gradient_ascent_'+ name +'.png', dpi=100)
 
 if __name__ == "__main__":
     ## Tiny plant, n=5 heliostats, pick parabolic-layout

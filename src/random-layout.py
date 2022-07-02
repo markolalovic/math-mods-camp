@@ -34,4 +34,4 @@ if __name__ == "__main__":
     # 54.059498031189726 34.36608182585655  6.971024042017483  # 1000 runs
     # 56.29071606490873  34.752847821956266 7.2430077703910385 # 3000 runs
 
-    utils.save_layout(best_layout[:, 0], best_layout[:, 1], "best-random-layout")
+    utils.save_layout(best_layout[:, 0], best_layout[:, 1], "random-layout")

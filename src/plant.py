@@ -119,7 +119,7 @@ class Plant:
                     self.layout[-1, 0], self.layout[-1, 1])
         return out
 
-    def draw(self):
+    def draw(self, name=None):
         fig, ax = plt.subplots()
         plt.axis('equal')
         x_margins = 2, 2 # for drawings
@@ -153,4 +153,12 @@ class Plant:
                 edgecolor='black', fill=False, linestyle='--')
             ax.add_patch(heli_circle)
 
-        plt.show()
+        # fig_size =
+        # f = plt.figure(figsize=fig_size)
+        if name:
+            fig.tight_layout()
+            fig.set_facecolor('white')
+            fig.savefig('../figures/layouts/'+name+'.png',
+                facecolor=fig.get_facecolor(), edgecolor='none', dpi=100)
+        else:
+            plt.show()

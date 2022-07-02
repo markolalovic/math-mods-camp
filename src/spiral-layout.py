@@ -5,8 +5,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from plant import Plant
+import utils
 
-def draw_points(plant, points_np, symbol):
+def draw_points(plant, spiral_points, masked_points):
     fig, ax = plt.subplots()
     plt.axis('equal')
     x_margins = 2, 2
@@ -34,9 +35,14 @@ def draw_points(plant, points_np, symbol):
     ax.add_patch(rect)
 
     ## draw points
-    ax.plot(points_np[:, 0], points_np[:, 1], symbol)
+    ax.plot(masked_points[:, 0], masked_points[:, 1], 'o')
 
-    plt.show()
+    ## draw spiral
+    ax.plot(spiral_points[:, 0], spiral_points[:, 1], '-', color='red')
+
+    # plt.show()
+    fig.tight_layout()
+    fig.savefig('../figures/spiral/spiral_plot.png', dpi=100)
 
 def filter_points(plant, point):
     if np.any(point[0] > plant.x_max):
@@ -53,21 +59,44 @@ def filter_points(plant, point):
 
     return True
 
+def spiral(t, scalex=1, scaley=0.33, shiftx=1, shifty=35):
+    ''' Spiral curve: [t0, t1] -> R^2
+        t \mapsto (scalex (shiftx + t cos(t)), scaley (shifty + t sin(t)))
+    '''
+    return scalex * (shiftx + t*np.cos(t)), scaley * (shifty + t*np.sin(t))
+
 if __name__ == "__main__":
     plant = Plant()
-
-    ## spiral: t \mapsto scalex (shiftx + t cos(t)), scaley (shifty + t sin(t)), for t in [2, 50]
-    ts = np.linspace(2, 50, 400)
-    def spiral(t, scalex=2, scaley=0.33, shiftx=1, shifty=34):
-        return scalex * (shiftx + t*np.cos(t)), scaley * (shifty + t*np.sin(t))
-
+    n = 5
+    plant = Plant()
+    ts = np.linspace(2, 50, 500)
     points = [spiral(t) for t in ts.tolist()]
     mask = [filter_points(plant, point) for point in points]
+    spiral_points = np.array(points)
+    masked_points = spiral_points[mask]
+    print(masked_points.shape[0])
+    draw_points(plant, spiral_points, masked_points)
 
-    points_np = np.array(points)
-    draw_points(plant, points_np, '-')
-
-    points_np = points_np[mask]
-    draw_points(plant, points_np, 'o')
-
-    print(points_np.shape[0])
+    xs = masked_points[:, 0]
+    ys = masked_points[:, 1]
+    nruns = 100
+    max_energy = 0
+    best_layout = []
+    energies = []
+    for i in range(nruns):
+        layout = []
+        choices = np.random.choice(xs.shape[0], n, replace=False)
+        for choice in choices:
+            layout.append([xs[choice], ys[choice]])
+        plant.layout = np.array(layout)
+        plant.set_layout()
+        if plant.valid_layout:
+            energy = utils.get_energy(plant, do_stats=False)
+            energies.append(energy)
+            if energy > max_energy:
+                max_energy = energy
+                best_layout = plant.layout
+    print(max_energy, np.mean(energies), np.std(energies))
+    # 55.62450358372094 35.12028133879603 6.585674904294718 # 100 runs
+    # 55.520676322352706 33.56358388126249 6.718791163821474 # 3000 runs
+    utils.save_layout(best_layout[:, 0], best_layout[:, 1], "spiral-random-layout")
