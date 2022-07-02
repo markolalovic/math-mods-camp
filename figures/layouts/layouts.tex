@@ -1,0 +1,56 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{tikz}
+
+\pagestyle{empty}
+\begin{document}
+\begin{figure}
+\centering
+\begin{subfigure}{.33\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{annealing-layout.png}
+    \caption{Simulated Annealing}
+\end{subfigure}\hfil % <-- added
+\begin{subfigure}{.33\textwidth}
+    \includegraphics[width=\textwidth]{de-layout.png}
+    \caption{Differential Evolution}
+\end{subfigure}\hfil % <-- added
+\begin{subfigure}{.33\textwidth}
+    \includegraphics[width=\textwidth]{parabolic-layout.png}
+    \caption{Parabolic}    
+\end{subfigure}
+
+
+\medskip
+\begin{subfigure}{.33\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{sqp-layout.png}
+    \caption{SQP}    
+\end{subfigure}\hfil % <-- added
+\begin{subfigure}{.33\textwidth}
+    \includegraphics[width=\textwidth]{basinhopping-layout.png}
+    \caption{Basin-hopping}
+\end{subfigure}\hfil % <-- added
+\begin{subfigure}{.33\textwidth}
+    \includegraphics[width=\textwidth]{cobyla-layout.png}
+    \caption{Cobyla}
+\end{subfigure}
+
+\medskip
+\begin{subfigure}{.33\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{theater-layout.png}
+    \caption{Theater}
+\end{subfigure}\hfil % <-- added
+\begin{subfigure}{.33\textwidth}
+    \includegraphics[width=\textwidth]{random-layout.png}
+    \caption{Best Random}
+\end{subfigure}\hfil % <-- added
+\begin{subfigure}{.33\textwidth}
+    \includegraphics[width=\textwidth]{spiral-layout.png}
+    \caption{Spiral}
+\end{subfigure}%
+\end{figure}%
+\end{document}
+

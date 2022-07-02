@@ -43,11 +43,21 @@ See the existing layouts in [`data/layouts`](https://github.com/markolalovic/mat
 ## Evaluation results
 
 Below are the current results for a few basic layouts evaluated on the Tiny plant:
+<p align="left">
+<img src="figures/layouts/layouts.png" alt="Layouts" width="500">
+</p>
 
-|         Layout         |    Energy  |
-|-------------------------|---------------|
-| parabolic-layout | 63.14 |
-| theater-layout   | 60.64 |
-| grid-layout | 48.22 |
-| tiny-layout | 45.19 |
-| uniform-random-layout | 34.75 (7.24) |
+|         Layout     |    Energy  |
+|--------------------|------------|
+| Simulated Annealing   |   65.32    |
+| Differential Evolution          |   65.14    |
+| Parabolic   |   63.14    |
+| SQP         |   61.34    |
+| Basin-hopping |   61.14    |
+| Cobyla      |   61.04    |
+| Theater     |   60.64    |
+| Best Random |   59.26    |
+| Spiral      |   55.62    |
+| Grid        |   48.22    |
+| Tiny        |   45.19    |
+
