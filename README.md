@@ -42,7 +42,7 @@ See the existing layouts in [`data/layouts`](https://github.com/markolalovic/mat
 
 ## Evaluation results
 
-Below are the current results for a few basic layouts evaluated on the Tiny plant using only a few angles and sun rays in order to run faster:
+Below are the current results for a few basic layouts evaluated on the Tiny plant using only a few Sun angles and Sun rays in order to run faster:
 <p align="left">
 <img src="figures/layouts/layouts.png" alt="Layouts" width="500">
 </p>
@@ -63,7 +63,7 @@ Below are the current results for a few basic layouts evaluated on the Tiny plan
 
 ## Final results
 
-Increasing the the number of Sun angles we consider from 17 to 180, and number of heliostat rays from 5 to 50, we see that some layouts were only exploiting the inaccuracies in the model:
+Increasing the number of angles we consider from 17 to 180, and the number of rays from 5 to 50, we see that some layouts were only exploiting the inaccuracies in the Toy model:
 
 |         Layout     |    Energy  |
 |--------------------|------------|
