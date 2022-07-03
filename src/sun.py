@@ -25,7 +25,7 @@ class Sun:
         out += "\n\t- times = " + str(self.times)
         return out
 
-    def draw(self):
+    def draw(self, name=None):
         fig, ax = plt.subplots()
         plt.axis('equal')
 
@@ -37,5 +37,10 @@ class Sun:
             ax.text(sun_vec[0], sun_vec[1], self.times[t], fontsize=12)
             ax.plot([0, sun_vec[0]],[0, sun_vec[1]], color="orange", linewidth=2)
 
-        plt.title("Toy Model - Sun")
-        plt.show()
+        if name:
+            fig.tight_layout()
+            fig.set_facecolor('white')
+            fig.savefig('../figures/models/'+name+'.png',
+                facecolor=fig.get_facecolor(), edgecolor='none', dpi=100)
+        else:
+            plt.show()

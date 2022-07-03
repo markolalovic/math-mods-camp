@@ -64,3 +64,20 @@ Below are the current results for a few basic layouts evaluated on the Tiny plan
 | Grid        |   48.22    |
 | Tiny        |   45.19    |
 
+## Final results
+
+Increasing the the number of Sun angles we consider from 17 to 180, and number of heliostat rays from 5 to 50, we get the following results:
+
+|         Layout     |    Energy  |
+|--------------------|------------|
+| Parabolic   |   717.42    |
+| Differential Evolution          |   693.42    |
+| Theater     |  693.34    |
+| Simulated Annealing   |  692.04   |
+| Cobyla      |   685.48    |
+| Best Random |   677.48    |
+| SQP         |   655.44    |
+| Basin-hopping |   652.77  |
+| Spiral      |   593.12    |
+| Grid        |   534.99    |
+| Tiny        |   522.43    |

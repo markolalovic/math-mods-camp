@@ -64,14 +64,23 @@ class Plant:
         self.ref_lengths = np.apply_along_axis(np.linalg.norm, 1, heli_refs)
         heli_refs = heli_refs / np.array([self.ref_lengths, self.ref_lengths]).T
         self.heli_refs = self.layout + heli_refs
-        self.max_ij = 0
         self.valid_layout = self.check_layout()
         if self.n == 1:
             self.max_ij = self.y_max
+        else:
+            self.max_ij = self.get_max_ij()
+
+    def get_max_ij(self):
+        max_ij = 0
+        for i in range(self.n):
+            for j in range(i + 1, self.n):
+                dist_ij = np.linalg.norm(self.layout[i] - self.layout[j])
+                if dist_ij > max_ij:
+                    max_ij = dist_ij
+        return max_ij/2
 
     def check_layout(self):
         eps = 1e-5
-        self.max_ij = 0
         if np.any(self.layout[:, 0] > self.x_max + eps):
             return False
         if np.any(self.layout[:, 0] < self.x_min - eps):
@@ -86,8 +95,6 @@ class Plant:
                 return False
             for j in range(i + 1, self.n):
                 dist_ij = np.linalg.norm(self.layout[i] - self.layout[j])
-                if dist_ij > self.max_ij:
-                    self.max_ij = dist_ij
                 if dist_ij < self.d_min:
                     return False
         return True
@@ -153,8 +160,6 @@ class Plant:
                 edgecolor='black', fill=False, linestyle='--')
             ax.add_patch(heli_circle)
 
-        # fig_size =
-        # f = plt.figure(figsize=fig_size)
         if name:
             fig.tight_layout()
             fig.set_facecolor('white')

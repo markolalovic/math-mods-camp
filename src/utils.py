@@ -30,7 +30,8 @@ def save_layout(xs, ys, layout_name, indent=4):
 
 def get_energy(plant, do_stats=False):
     ''' Returns the energy for a given plant initialized with a layout. '''
-    sun = Sun()
+    ## sun model: Sun(the number of angles / sun directions we consider)
+    sun = Sun(180)
     powers = np.zeros(sun.m)
     if do_stats:
         etas_means_m = np.zeros((sun.m, 3))

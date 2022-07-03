@@ -12,7 +12,7 @@ class State:
         Inputs:
             * object plant of class Plant: description of a plant
             * sun_angle: angle between 0 and \pi in radians
-            TODO: optimize 
+            TODO: optimize
         '''
         self.plant = plant
         self.sun_angle = sun_angle
@@ -189,7 +189,7 @@ class State:
 
         return True
 
-    def draw(self, i):
+    def draw(self, i, name=None):
         fig, ax = plt.subplots()
         plt.axis('equal')
         x_margins = 2, 2 # for drawings
@@ -240,7 +240,10 @@ class State:
         ax.plot([self.surf_points[i, :, 0], self.sun_ends[i, :, 0]],
                 [self.surf_points[i, :, 1], self.sun_ends[i, :, 1]], color="orange")
 
-        plt.title("State at sun angle "
-          + str(np.round(np.degrees(self.sun_angle))))
-
-        plt.show()
+        if name:
+            fig.tight_layout()
+            fig.set_facecolor('white')
+            fig.savefig('../figures/states/'+name+'.png',
+                facecolor=fig.get_facecolor(), edgecolor='none', dpi=150)
+        else:
+            plt.show()
