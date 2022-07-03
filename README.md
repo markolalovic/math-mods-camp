@@ -40,12 +40,9 @@ And heliostats must not be too close to the receiver
 
 See the existing layouts in [`data/layouts`](https://github.com/markolalovic/math-mods-camp/tree/main/data/layouts), for example: [grid-layout.json](https://raw.githubusercontent.com/markolalovic/math-mods-camp/main/data/layouts/grid-layout.json) with coordinates for 5 heliostats.
 
-## Instructions
-If you happen to find some high energy layout for the Toy model, try to contribute it by doing the pull request. If you find it by running some algorithm, also try to push the code. Be aware that if you only got a small increase in energy, it can be that your layout is only exploiting the inaccuracies in the model, i.e. now the Toy model is using only a few angles in order to run faster. For final evaluation, I will try increasing the number of angles we consider and re-evaluate the layouts to see which layout is only exploiting the inaccuracies in the model that are caused by using too few sun angles.
-
 ## Evaluation results
 
-Below are the current results for a few basic layouts evaluated on the Tiny plant:
+Below are the current results for a few basic layouts evaluated on the Tiny plant using only a few angles and sun rays in order to run faster:
 <p align="left">
 <img src="figures/layouts/layouts.png" alt="Layouts" width="500">
 </p>
@@ -66,7 +63,7 @@ Below are the current results for a few basic layouts evaluated on the Tiny plan
 
 ## Final results
 
-Increasing the the number of Sun angles we consider from 17 to 180, and number of heliostat rays from 5 to 50, we get the following results:
+Increasing the the number of Sun angles we consider from 17 to 180, and number of heliostat rays from 5 to 50, we see that some layouts were only exploiting the inaccuracies in the model:
 
 |         Layout     |    Energy  |
 |--------------------|------------|
