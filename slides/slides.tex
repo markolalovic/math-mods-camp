@@ -32,7 +32,7 @@
 \setbeamerfont{date}{size=\footnotesize}
 
 \title[2D Toy Model Layout Optimization]{Two Dimensional Toy Model and Layout Optimization}
-\author[\textcolor{white}{Marko Lalovic}]{\textcolor{black}{Marko Lalovic} \vspace{-.7cm}}
+\author[\textcolor{white}{Marko Lalovic}]{\textcolor{black}{Marko Lalovic} \vspace{-.2cm}}
 \date[\textcolor{white}{July 12, 2022}]{\textcolor{black}{Summer 2022}}
 
 \defbeamertemplate*{title page}{customized}[1][]
@@ -137,7 +137,7 @@
 
 \begin{frame}
 \begin{definition}[Layout Optimization Problem]
-Find the optimal {\it layout}, positions $H_{i}$ of heliostats $i = 1, \dots n$, that maximizes the daily energy production $E$ of the Toy Model Power Plant. Subject to: 
+Find the optimal {\it layout}, positions $H_{i}$ of heliostats $i = 1, \dots n$, that maximizes the daily efficiency $E$ of the Toy Model Power Plant. Subject to: 
 \begin{itemize}
 \item Positions $H_{i}$ are in the defined Area of the Plant
 \item $H_{i}, H_{j}, i\neq j$ are at the distance at least 4m
@@ -234,9 +234,11 @@ $$\implies d^{*} = \argmin_{d} \norm{H - R} \qquad \text{subject to: } \norm{H -
 \end{frame}
 
 \begin{frame}
-\begin{definition}[Daily energy production efficiency $E$]
+\begin{definition}[Daily efficiency $E$]
 \begin{align}
-\text{E}^{*} &= \int_{0}^{\pi} d\phi = \pi \\[.5em]
+\text{E}^{*} &= \int_{0}^{\pi} d\phi = \pi \qquad  
+\text{when} \quad \eta_{aa} = \eta_{cos} = \eta_{spill} = 1
+\\[.5em]
 \text{E}(\rho, d) &= \eta_{aa}(d) \cdot 
 \frac{1}{\pi}\int_{0}^{\pi} 
 \eta_{cos}(\rho, \phi) \cdot \eta_{spill}(\rho, \phi)
@@ -289,7 +291,7 @@ For each heliostat $i=1,\dots n$:
 \end{frame}
 
 \begin{frame}{Multiple Heliostats Optimization}
-For a given {\it layout} $H_{1}, H_{2}, \dots, H_{n}$ we approximate daily energy $E$ by
+For a given {\it layout} $H_{1}, H_{2}, \dots, H_{n}$ we approximate daily efficiency $E$ by
 \begin{equation}
 \widehat{\text{E}}(H_{1}, H_{2}, \dots, H_{n}) = 
 \frac{1}{n\cdot m}
