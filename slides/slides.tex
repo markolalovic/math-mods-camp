@@ -17,6 +17,8 @@
 \setbeamercolor{bibliography entry location}{fg=black}
 \setbeamercolor{bibliography entry note}{fg=black}
 
+\DeclareMathOperator*{\argmin}{arg\,min}
+
 \usepackage[utf8x]{inputenc}
 \usepackage[english]{babel}
 
@@ -29,7 +31,7 @@
 \setbeamerfont{author}{size=\normalsize}
 \setbeamerfont{date}{size=\footnotesize}
 
-\title[Toy Model]{Two Dimensional Toy Model and Layout Optimization}
+\title[2D Toy Model Layout Optimization]{Two Dimensional Toy Model and Layout Optimization}
 \author[\textcolor{white}{Marko Lalovic}]{\textcolor{black}{Marko Lalovic} \vspace{-.7cm}}
 \date[\textcolor{white}{July 12, 2022}]{\textcolor{black}{Summer 2022}}
 
@@ -65,7 +67,7 @@
 \begin{center}
 \begin{figure}
 \includegraphics[width=.95\textwidth]{../figures/states/toy-model-coords.png}
-\caption{Model of a solar tower power plant in two dimensions}
+\caption{Toy Model and (Tiny) Power Plant, units are meters. Solar angle $\phi = 90$°.}
 \end{figure}
 \end{center}
 \end{frame}
@@ -74,7 +76,7 @@
 \begin{center}
 \begin{figure}
 \includegraphics[width=.95\textwidth]{../figures/states/toy-model/0.png}
-\caption{Sun at 0°}
+\caption{Solar angle $\phi = 0$°}
 \end{figure}
 \end{center}
 \end{frame}
@@ -83,7 +85,7 @@
 \begin{center}
 \begin{figure}
 \includegraphics[width=.95\textwidth]{../figures/states/toy-model/1.png}
-\caption{Sun at 30°}
+\caption{Solar angle $\phi = 30$°}
 \end{figure}
 \end{center}
 \end{frame}
@@ -92,7 +94,7 @@
 \begin{center}
 \begin{figure}
 \includegraphics[width=.95\textwidth]{../figures/states/toy-model/2.png}
-\caption{Sun at 60°}
+\caption{Solar angle $\phi = 60$°}
 \end{figure}
 \end{center}
 \end{frame}
@@ -101,7 +103,7 @@
 \begin{center}
 \begin{figure}
 \includegraphics[width=.95\textwidth]{../figures/states/toy-model/3.png}
-\caption{Sun at 90°}
+\caption{Solar angle $\phi = 90$°}
 \end{figure}
 \end{center}
 \end{frame}
@@ -110,7 +112,7 @@
 \begin{center}
 \begin{figure}
 \includegraphics[width=.95\textwidth]{../figures/states/toy-model/4.png}
-\caption{Sun at 120°}
+\caption{Solar angle $\phi = 120$°}
 \end{figure}
 \end{center}
 \end{frame}
@@ -119,7 +121,7 @@
 \begin{center}
 \begin{figure}
 \includegraphics[width=.95\textwidth]{../figures/states/toy-model/5.png}
-\caption{Sun at 150°}
+\caption{Solar angle at $\phi = 150$°}
 \end{figure}
 \end{center}
 \end{frame}
@@ -128,12 +130,37 @@
 \begin{center}
 \begin{figure}
 \includegraphics[width=.95\textwidth]{../figures/states/toy-model/6.png}
-\caption{Sun at 180°}
+\caption{Solar angle at $\phi = 180$°}
 \end{figure}
 \end{center}
 \end{frame}
 
-\begin{frame}{Layout Optimization}
+\begin{frame}
+\begin{definition}[Layout Optimization Problem]
+Find the optimal {\it layout}, positions $H_{i}$ of heliostats $i = 1, \dots n$, that maximizes the daily energy production $E$ of the Toy Model Power Plant. Subject to: 
+\begin{itemize}
+\item Positions $H_{i}$ are in the defined Area of the Plant
+\item $H_{i}, H_{j}, i\neq j$ are at the distance at least 4m
+\item $H_{i}, R$ are at the distance at least 4m
+\end{itemize}
+for all $i = 1,\dots n$.
+\end{definition}
+\vspace{.5cm}
+Where we only consider the effects caused by
+\begin{description}
+\item[\, {\it Cosine effect} $\eta_{cos}:$] Solar angle not being perpendicular to the heliostat 
+\item[\; {\it Spillage effect} $\eta_{spill}:$] Reflected rays from flat mirror missing the receiver
+\item[\; {\it Atmospheric Attenuation $\eta_{aa}$:}] Sun radiation being lost due to attenuation
+\end{description}
+\vspace{.5cm}
+In case of $n > 1$ also
+\begin{description}
+\item[\; {\it Shading effect} $\eta_{shade}:$] Solar rays being blocked by other heliostats
+\item[\; {\it Blocking Effect $\eta_{block}:$}] Reflected rays being blocked by other heliostats
+\end{description}
+\end{frame}
+
+\begin{frame}{Single Heliostat Optimization $H = H(\rho)$}
 \begin{center}
 \begin{figure}
 \includegraphics[width=.95\textwidth]{../figures/cos-effect-crop.pdf}
@@ -142,7 +169,7 @@
 \end{center}
 \end{frame}
 
-\begin{frame}{Layout Optimization}
+\begin{frame}{Single Heliostat Optimization $H = H(\rho)$}
 Using relations {\bf(c)} and {\bf(d)}
 \begin{align*} %\frac{d}{d\rho}
 \eta_{cos}(\rho) &= \int_{0}^{\pi} \cos \left( \frac{|\pi - \phi - \rho |}{2} \right) d\phi 
@@ -160,7 +187,7 @@ Using relations {\bf(c)} and {\bf(d)}
 \end{center}
 \end{frame}
 
-\begin{frame}{Layout Optimization}
+\begin{frame}{Single Heliostat Optimization $H = H(\rho)$}
 \begin{minipage}[t]{0.5\textwidth}
 \begin{center}
 \begin{figure}
@@ -171,9 +198,9 @@ Using relations {\bf(c)} and {\bf(d)}
 \end{minipage}%%%%%%%%%%%%%%%%
 \begin{minipage}[t]{0.5\textwidth}
 \vspace{2mm}
-Using 
+Since $\tau = 80$° and $|RQ| = 2$, then by using
 \begin{align*}
-\frac{a + |RQ|}{a} &= \frac{b + |HP|}{b}
+\frac{a + 2}{a} &= \frac{b + |HP|}{b}
 \quad \text{(Similarity)} \\[.5em]
 \frac{a}{\sin(\alpha)} &= \frac{b}{\sin(\beta)}
 \quad \text{(Sine Rule)}
@@ -189,10 +216,10 @@ we get
 \end{minipage}
 \end{frame}
 
-\begin{frame}{Layout Optimization}
+\begin{frame}{Single Heliostat Optimization $H = H(d)$}
 Let $d = \norm{H - R}$, then the {\it atmospheric attenuation}~\footnote{{\tiny \color{blue} P. Richter, Simulation and optimization of solar thermal power plants. PhD dissertation, RWTH Aachen University, 2017.}} is
 \begin{equation}
-\eta_{\text{aa}}(d_{i}) = \begin{cases}
+\eta_{\text{aa}}(d) = \begin{cases}
 0.99321 - 1.176 \cdot 10^{-4} d + 1.97 \cdot 10^{-8} d^{2}, \quad d \leq 1000 m\\
 \exp(-1.106 \cdot 10^{-4} d), \quad d > 1000 m
 \end{cases}
@@ -203,23 +230,25 @@ Let $d = \norm{H - R}$, then the {\it atmospheric attenuation}~\footnote{{\tiny 
 \caption{Atmospheric Attenuation Effect}
 \end{figure}
 \end{center}
+$$\implies d^{*} = \argmin_{d} \norm{H - R} \qquad \text{subject to: } \norm{H - R} > 4$$
 \end{frame}
 
-\begin{frame}{Layout Optimization}
-Let {\it Daily Energy Production} (DEP) be 
+\begin{frame}
+\begin{definition}[Daily energy production efficiency $E$]
 \begin{align}
-\text{DEP}^{*} &= \int_{0}^{\pi} d\phi = \pi \\[.5em]
-\text{DEP}(\rho, d) &= \eta_{aa}(d) \cdot 
+\text{E}^{*} &= \int_{0}^{\pi} d\phi = \pi \\[.5em]
+\text{E}(\rho, d) &= \eta_{aa}(d) \cdot 
 \frac{1}{\pi}\int_{0}^{\pi} 
 \eta_{cos}(\rho, \phi) \cdot \eta_{spill}(\rho, \phi)
 d\phi
 \end{align}
+\end{definition}
 \begin{minipage}[t]{0.5\textwidth}
 \begin{center}
 \vspace{1.2cm}
 \begin{figure}
 \includegraphics[width=.8\textwidth]{../figures/DEP-crop.png}
-\caption{$\text{DEP}(\rho, d) = \text{DEP}(\rho)$.}
+\caption{Plot of $\text{E}(\rho) \implies \rho^{*} \approx 35$°}
 \end{figure}
 \end{center}
 \end{minipage}%%%%%%%%%%%%%%%%
@@ -227,13 +256,20 @@ d\phi
 \begin{center}
 \begin{figure}
 \includegraphics[width=\textwidth]{../figures/singleton-solution-crop.pdf}
-\caption{Singleton Solution.}
+\caption{Solution $H^{*} \approx (3.29, 9.73)$.}
 \end{figure}
 \end{center}
 \end{minipage}
 \end{frame}
 
-\begin{frame}{Layout Optimization}
+\begin{frame}{Multiple Heliostats Optimization}
+For each heliostat $i=1,\dots n$:
+\begin{align}
+\eta_{shade}&=\text{proportion of solar rays that are not blocked by other heliostats} \\[.5em]
+\eta_{block}&=\text{proportion of reflected rays that are not blocked by other heliostats}
+\end{align}
+
+
 \begin{minipage}[t]{0.5\textwidth}
 \begin{center}
 \begin{figure}
@@ -252,10 +288,10 @@ d\phi
 \end{minipage}
 \end{frame}
 
-\begin{frame}{Layout Optimization}
-For a given {\it layout} $H_{1}, H_{2}, \dots, H_{n}$
+\begin{frame}{Multiple Heliostats Optimization}
+For a given {\it layout} $H_{1}, H_{2}, \dots, H_{n}$ we approximate daily energy $E$ by
 \begin{equation}
-\widehat{\text{DAP}}(H_{1}, H_{2}, \dots, H_{n}) := 
+\widehat{\text{E}}(H_{1}, H_{2}, \dots, H_{n}) = 
 \frac{1}{n\cdot m}
 \sum_{i = 1}^{n} \eta_{aa} \cdot
 \sum_{k = 1}^{m} \eta_{cos}(\phi_{k}) \cdot 
@@ -268,7 +304,7 @@ For a given {\it layout} $H_{1}, H_{2}, \dots, H_{n}$
 \end{figure}
 \end{center}
 \vspace{-0.4cm}
-\begin{example}[Tiny Layout]
+\begin{example}[Line Layout]
 $$
 H_1 = (6, 5), \quad 
 H_2 = (12, 5), \quad
@@ -276,16 +312,16 @@ H_3 = (18, 5), \quad
 H_4 = (23, 5), \quad
 H_5 = (29, 5)
 $$
-Using $m = 17$ and $5$ rays per heliostat we get $\widehat{\text{DAP}} \approx 0.53$~\footnote{Found one error in the code, but the results do not change significantly so I'm showing the same results as in the Report.}
+Using $m = 17$ and $5$ rays per heliostat we get $\widehat{\text{E}} \approx 0.53$~\footnote{Found one error in the code, but the results do not change significantly so I'm showing the same results as in the Report.}
 \end{example}
 \end{frame}
 
-\begin{frame}{Layout Optimization}
+\begin{frame}{Multiple Heliostats Optimization}
 \begin{minipage}[t]{0.5\textwidth}
 \begin{center}
 \begin{figure}
 \includegraphics[width=\textwidth]{../figures/spiral/spiral-construction.png}
-\caption{Spiral idea.}
+\caption{Golden spiral idea applied in 2D.}
 \end{figure}
 \end{center}
 \end{minipage}%%%%%%%%%%%%%%%%
@@ -294,19 +330,19 @@ Using $m = 17$ and $5$ rays per heliostat we get $\widehat{\text{DAP}} \approx 0
 \vspace{-.5cm}
 \begin{figure}
 \includegraphics[width=\textwidth]{../figures/spiral/spiral_plot.png}
-\caption{Possible heliostat positions.}
+\caption{Valid heliostat positions.}
 \end{figure}
 \end{center}
 \end{minipage}
 \begin{center}
 \begin{figure}
 \includegraphics[width=.35\textwidth]{../figures/layouts-old/spiral-layout-crop.png}
-\caption{Spiral Layout that ``grew up on the spiral".}
+\caption{Spiral Layout optimized sequentially, imitating how leaves grow.}
 \end{figure}
 \end{center}
 \end{frame}
 
-\begin{frame}{Layout Optimization}
+\begin{frame}{Multiple Heliostats Optimization}
 Placing the heliostats equidistantly some distance apart on the parabola
 \begin{equation}
 y = \frac{1}{48} x^{2}
@@ -330,8 +366,7 @@ with the focal point $R = (0, 12)$
 \end{minipage}
 \end{frame}
 
-\begin{frame}{Layout Optimization}
-Plots of $\widehat{\text{DAP}}(x_3, y_3)$
+\begin{frame}{Multiple Heliostats Optimization}
 \begin{minipage}[t]{0.5\textwidth}
 \begin{center}
 \begin{figure}
@@ -345,13 +380,16 @@ Plots of $\widehat{\text{DAP}}(x_3, y_3)$
 \vspace{-.5cm}
 \begin{figure}
 \includegraphics[width=.9\textwidth]{../figures/landscape/surface_plot-old.png}
-\caption{Landscape rotated.}
+\caption{Same landscape rotated.}
 \end{figure}
 \end{center}
 \end{minipage}
+\begin{center}
+Plot of $\widehat{\text{E}}(x_3, y_3)$ for the valid parabolic layout.
+\end{center}
 \end{frame}
 
-\begin{frame}{Layout Optimization}
+\begin{frame}{Multiple Heliostats Optimization}
 Running gradient ascent
 \begin{equation}
 x_{k} = x_{k - 1} + \sigma \cdot g
@@ -376,33 +414,12 @@ where $g$ is first finite difference estimate and $\sigma = 1$
 \end{minipage}
 \end{frame}
 
-\begin{frame}{Layout Optimization}
-Running gradient ascent
-\begin{equation}
-x_{k} = x_{k - 1} + \sigma \cdot g
-\end{equation}
-where $g$ is first finite difference estimate and $\sigma = 1$
-\begin{minipage}[t]{0.5\textwidth}
-\begin{center}
-\begin{figure}
-\includegraphics[width=\textwidth]{../figures/landscape/gradient_ascent_close-old.png}
-\caption{Starting close to the optimum.}
-\end{figure}
-\end{center}
-\end{minipage}%%%%%%%%%%%%%%%%
-\begin{minipage}[t]{0.5\textwidth}
-\vspace{0.1cm}
-\begin{center}
-\begin{figure}
-\includegraphics[width=\textwidth]{../figures/landscape/gradient_ascent_far-old.png}
-\caption{Starting far from the optimum.}
-\end{figure}
-\end{center}
-\end{minipage}
-\end{frame}
-
-\begin{frame}{Layout Optimization}
-Running Sequential Quadratic Programming (SQP) method, from a class of Lagrange-Newton methods
+\begin{frame}{Multiple Heliostats Optimization}
+\begin{itemize}
+\item Same story with running higher order methods and taking constraints into account
+\item Although, still got some interesting results
+\item In this case Sequential Quadratic Programming (SQP) method from a class of Lagrange-Newton methods:
+\end{itemize}
 \begin{minipage}[t]{0.5\textwidth}
 \begin{center}
 \begin{figure}
@@ -422,64 +439,67 @@ Running Sequential Quadratic Programming (SQP) method, from a class of Lagrange-
 \end{minipage}
 \end{frame}
 
-\begin{frame}{Layout Optimization}
-Running a set of different methods
+\begin{frame}{Multiple Heliostats Optimization}
+Running a set of different methods, notice the similarity of rows!
 \begin{center}
 \begin{figure}
-\includegraphics[width=.64\textwidth]{../figures/layouts/layouts.pdf}
+\includegraphics[width=.64\textwidth]{../figures/layouts/layouts-2.pdf}
 \caption{Top 9 Layouts.}
 \end{figure}
 \end{center}
 \end{frame}
 
-\begin{frame}{Layout Optimization}
+\begin{frame}{Numerical Results}
 \begin{itemize}
+\item Increasing the number of solar angles from 17 to 180 and rays from 5 to 50
 \item Most layouts were only exploiting the inaccuracies in the Toy model
-\item Increasing the number of angles from 17 to 180 and rays from 5 to 50:
 \end{itemize}
 
 \begin{table}
 \parbox{.45\linewidth}{
 \centering
 \begin{tabular}{lllll}
-              &  $\widehat{\text{DAP}}$    &  &  &  \\
-annealing-layout    & 0.77 &  &  &  \\[.5em]
-de-layout           & 0.77 &  &  &  \\[.5em]
-parabolic-layout    & 0.74 &  &  &  \\[.5em]
-basinhopping-layout & 0.72 &  &  &  \\[.5em]
-sqp-layout          & 0.72 &  &  &  \\[.5em]
-cobyla-layout       & 0.72 &  &  &  \\[.5em]
-theater-layout      & 0.71 &  &  &  \\[.5em]
-random-layout       & 0.70 &  &  &  \\[.5em]
-spiral-layout       & 0.66 &  &  & 
+             {\bf Layout} &  $\pmb{\widehat{\text{E}}}$    \\
+          \hline
+Simulated Annealing	    & 0.77 \\[.5em]
+Differential Evolution	           & 0.77 \\[.5em]
+Parabolic    & 0.74 \\[.5em]
+Basin-hopping	 & 0.72 \\[.5em]
+SQP	          & 0.72 \\[.5em]
+Cobyla & 0.72 \\[.5em]
+Theater & 0.71 \\[.5em]
+Best Random	     & 0.70 \\[.5em]
+Spiral       & 0.66 \\[.5em]
+Random & $0.42 \pm 0.09$
 \end{tabular}
-\caption{Layout optimization accuracy.}
+\caption{By using layout optimization model accuracy.}
 }
 \hfill
 \parbox{.45\linewidth}{
 \centering
 \begin{tabular}{lllll}
-              &  $\widehat{\text{DAP}}$    &  &  &  \\
-parabolic-layout    & 0.80 &  &  &  \\[.5em]
-annealing-layout    & 0.77 &  &  &  \\[.5em]
-de-layout           & 0.77 &  &  &  \\[.5em]
-theater-layout      & 0.77 &  &  &  \\[.5em]
-cobyla-layout       & 0.76 &  &  &  \\[.5em]
-random-layout       & 0.75 &  &  &  \\[.5em]
-basinhopping-layout & 0.73 &  &  &  \\[.5em]
-sqp-layout          & 0.73 &  &  &  \\[.5em]
-spiral-layout       & 0.66 &  &  &  
+             {\bf Layout} &  $\pmb{\widehat{\text{E}}}$    \\
+          \hline             
+Parabolic    & 0.80 \\[.5em]
+Simulated Annealing    & 0.77 \\[.5em]
+Differential Evolution           & 0.77 \\[.5em]
+Theater      & 0.77 \\[.5em]
+Cobyla       & 0.76 \\[.5em]
+Best Random       & 0.75 \\[.5em]
+Basin-hopping & 0.73 \\[.5em]
+SQP          & 0.73 \\[.5em]
+Spiral       & 0.66
 \end{tabular}
-\caption{Increased model accuracy.}
+\caption{By using increased model accuracy.}
 }
 \end{table}
 \end{frame}
 
 \begin{frame}{TODOs and Open Questions}
 \begin{itemize}
-\item Improve the model and repeat the optimization and evaluation
+\item Improve the model, test the code and repeat the optimization and evaluation
 \item Try showing that putting heliostats on parabola is the best layout
-\item Contribute github.com/markolalovic/math-mods-camp
+\item Or find a better layout (github.com/markolalovic/math-mods-camp)
 \end{itemize}
 
 \begin{center}
